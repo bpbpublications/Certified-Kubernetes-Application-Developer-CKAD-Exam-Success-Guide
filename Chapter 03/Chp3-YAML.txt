@@ -1,0 +1,33 @@
+#pod.yaml
+
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ymlnginx
+spec:
+  containers:
+  - image: nginx
+    name: nginx
+    ports:
+    - containerPort: 8081
+  restartPolicy: Never
+
+
+
+  # set envoirnment variable 
+
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: FEAPP
+spec:
+  containers:
+  - image: nginx
+    name:  nginxfe
+    env:
+    - name: morning_greetings
+      value: Goodmorning
+
+ 

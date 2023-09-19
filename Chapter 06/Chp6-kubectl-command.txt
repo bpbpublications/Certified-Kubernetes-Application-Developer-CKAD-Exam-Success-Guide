@@ -1,0 +1,18 @@
+
+
+#command to query the main container
+
+kubectl exec -it sidecarpattern -c app /bin/sh
+
+
+# command to query the sidecar container
+kubectl exec -it sidecarpattern -c sidecar /bin/sh
+
+# command to query the main container
+
+kubectl exec -it adapterpod -c app /bin/sh
+
+
+# command to query the dapter container
+
+kubectl exec -it adapterpod -c adapter /bin/sh

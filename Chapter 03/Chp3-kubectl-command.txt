@@ -1,0 +1,79 @@
+
+#command to lists all Pods in the cluster
+
+kubectl get pods
+
+#imperative way to create and start a nginx Pod
+
+kubectl run nginx --image=nginx --restart=Never --port=8080
+
+#Command creates a Pod using the data in pod.yaml
+
+kubectl create -f pod.yaml
+
+
+#hybrid technique and backslash(\) example
+
+kubectl run backend --image=nginx --restart=Never --port=80 \
+  -o yaml --dry-run=client > podymlfile.yaml
+
+ #command prints supported API resources
+
+ kubectl api-resources
+
+ # delete Pod from cluster,
+
+ kubectl delete po ymlnginx
+
+# command shows the details about Pod
+
+ kubectl describe Pod nginx
+
+# use help command to get more details
+
+ kubectl run -h
+
+ #command to print logs from Pod 
+
+ kubectl logs nginx
+
+#get an interactive shell on Pod
+
+ kubectl exec -it nginx -- /bin/sh
+
+# executes command inside Pod
+
+ kubectl exec nginx -- ls
+
+
+#command gets all namespace in the cluster
+
+ kubectl get namespace
+
+# command to create a new namespace
+
+kubectl create namespace test
+
+# command to create Pod under namespace
+
+kubectl run hazelcast --image=hazelcast/hazelcast -n test
+
+
+# command to delete namespace
+kubectl delete test
+
+
+#command to create deployment 
+kubectl create deployment nginx-deploy --image=nginx  --replicas=3
+
+#commands get the deployments in the cluster
+
+kubectl get deployment
+
+#command to delete the deployment
+
+kubectl delete deployment nginx-deploy
+
+
+
+

@@ -1,0 +1,194 @@
+# Solution 1
+
+kubectl create ns ckadpractice1
+
+kubectl run pod1 --image=nginx --namespace=ckadpractice1
+
+kubectl run pod2 --image=busybox --restart=Never --namespace=ckadpractice2 --command --env
+
+kubectl get po --all-namespaces
+
+
+# Solution 2
+
+kubectl run testpod --image=nginx --port=80
+
+kubectl set image pod testpod testpod=nginx:1.7.1
+
+kubectl get po testpod -o wide
+
+# Solution 3
+
+kubectl logs testpod
+
+kubectl logs testpod -p
+
+kubectl exec -it testpod -- /bin/sh
+
+
+# Solution 4
+
+kubectl run temppod --image=busybox -it --rm --restart=Never -- /bin/sh -c ‘echo hello’
+
+
+# Solution 5
+
+kubectl run envpod --image=nginx --env=user=admin
+
+# Solution 6
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: multipod
+spec:
+  containers:
+  - args:
+    - /bin/sh
+    - -c
+    - echo hello;sleep 2400
+    image: busybox
+    name: busybox1
+  - args:
+    - /bin/sh
+    - -c
+    - echo hello;sleep 2400
+    image: busybox
+    name: busybox2
+
+
+    # Solution 7
+
+
+
+    kubectl run pod1 --image=nginx --labels=release=v1
+
+    kubectl get po --show-labels
+
+    kubectl label po pod2 release=v2 --overwrite
+
+
+    # Solution 8
+
+
+    kubectl get po -l release=v2
+    kubectl label po pod1 pod2 pod3 release-
+
+
+   # Solution 9
+
+    kubectl annotate po pod1 pod2 pod3 author= ‘myname’
+    kubectl annotate po pod1 pod2 pod3 author-
+    kubectl delete po pod1 pod2 pod3
+
+    # Solution 10
+
+    kubectl create deployment mydep --image=nginx --replicas=2
+    kubectl set image deploy mydep nginx=nginx:1.19.8
+
+    kubectl scale deploy mydep --replicas=4
+
+   # Solution 11
+
+   kubectl create job my-job --image=busybox -- date
+
+  # Solution 12
+
+   $kubectl create cronjob my-cron --image=busybox --schedule="*/1 * * * *"-- /bin/sh -c 'echo Hello from the K8S'
+
+  # Solution 13
+
+   helm create chart1
+   helm list --pending -A
+
+# Solution 14
+
+kubectl create cm configtest --from-literal=var=value1
+
+
+apiVersion: v1
+kind: Pod
+metadata:
+labels:
+  name: configpod
+spec:
+  containers:
+  - image: nginx
+    name: nginx
+    env:
+    - name: configenv # name of the env variable
+      valueFrom:
+        configMapKeyRef:
+          name: configtest # name of config map
+          key: var # name of the entity in config map
+
+
+
+# Solution 15
+
+
+kubectl create secret generic secret-test --from-literal=password=passw0rd1
+
+
+# Solution 16
+
+
+kubectl create sa test1
+
+apiVersion: v1
+kind: Pod
+metadata:
+labels:
+  name: nginx
+spec:
+  serviceAccountName: test1
+ containers:
+ - image: nginx
+   name: nginx
+
+# Solution 17
+
+kubectl create ns rt-test
+
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: test-rq
+  namespace: rt-test
+spec:
+  hard:
+    requests.cpu: 2
+    requests.memory: 2Gi
+    limits.cpu: 4
+    limits.memory: 4Gi
+
+# Solution 18
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: livetest
+spec:
+  containers:
+  - image: nginx
+    name: livetest
+    livenessProbe:
+     exec:
+       command:
+       - ls
+
+# Solution 19
+
+
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+ name: mypv
+spec:
+   storageClassName: normal
+   capacity:
+    storage: 5Gi
+   accessModes:
+     - ReadWriteOnce
+   hostPath:
+     path: /etc/foo

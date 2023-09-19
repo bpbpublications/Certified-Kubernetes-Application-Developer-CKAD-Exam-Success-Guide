@@ -1,0 +1,46 @@
+
+#command to get the logs of Pod
+
+kubectl logs ping
+
+
+#command to get the logs of sec Pod
+
+kubectl logs pingtwo pingsec
+
+
+# command to describe Pod
+
+kubectl describe Pod checkpod
+
+# command to get events
+
+kubectl get events
+
+# command to get Pod from all the namespaces other than the default namespace
+
+kubectl get pods --all-namespaces --field-selector metadata. namespace!=default
+
+
+# command to get Pod from all the namespaces only from default namespace
+
+kubectl get pods --all-namespaces --field-selector metadata. namespace=default
+
+#command shows the use of a field selector
+
+kubectl get pods --field-selector metadata.name=checkpod
+
+#command to gets events and puts them in json forma
+
+kubectl get events -o json
+
+#command to get events associated with Pod using the field selector
+kubectl get events --field-selector involvedObject.kind=Pod
+
+#command to enable the metric server.
+
+minikube addons enable metrics-server
+
+# command to execute top command
+Kubectl top nodes
+kubectl top Pod

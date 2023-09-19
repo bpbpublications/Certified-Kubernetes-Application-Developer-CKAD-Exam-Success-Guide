@@ -1,0 +1,59 @@
+# Solution 1
+
+kubectl create configmap democonfigmap --from-literal=username=bot
+
+kubectl get configmap democonfigmap
+
+#Solution 2
+
+kubectl create secret generic demosecret --from-literal=pwd=test123
+kubectl get secret demosecret
+
+
+
+#Solution 3
+
+apiVersion: v1
+kind: Pod
+metadata:
+ name: consumer
+spec:
+ containers:
+  - image: nginx
+    name: appvol
+    volumeMounts:
+    - name: secret-volume
+      mountPath: /var/app
+ volumes:
+  - name: secret-volume
+    secret:
+      secretName: demosecret
+
+
+kubectl exec -it consumer -- bin/sh
+
+#Solution 4
+
+kubectl delete po consumer
+
+
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: consumer
+spec:
+  containers:
+  - image: nginx
+    name: appvol
+    volumeMounts:
+    - name: secret-volume
+      mountPath: /var/app
+    envFrom:
+    - configMapRef:
+       name: democonfigmap
+  volumes:
+  - name: secret-volume
+    secret:
+      secretName: demosecret
+

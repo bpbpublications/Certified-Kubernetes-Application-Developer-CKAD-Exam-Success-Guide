@@ -1,0 +1,35 @@
+
+#command to print the environment variable of the Pod 
+
+kubectl exec nginx-env -- printenv
+
+
+#command to configmap 
+
+kubectl create configmap test-config --from-literal=interval=10
+
+#command to configmap with multiple name value 
+
+kubectl create configmap config2 --from-literal=interval=10 --from-literal=status=true
+
+
+#command to create configmap from json
+
+kubectl create configmap dbconfig --from-file=values.json
+
+
+#command to create configmap
+
+kubectl create configmap envdbconfig --from-env-file=values.env
+
+
+#command to create configmap from files
+kubectl create configmap dirconfig --from-file=configdir
+
+#command to create secret
+kubectl create secret generic dbcredentials --from-literal=dbpwd=test@123
+
+#command to create configmap and secret from literal
+
+kubectl create configmap db-username --from-literal=username=admin
+kubectl create secret generic db-password --from-literal=pwd=test@123

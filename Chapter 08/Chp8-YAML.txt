@@ -1,0 +1,94 @@
+
+# env variables
+
+apiVersion: v1
+kind: Pod
+metadata:
+ name: nginx-env
+spec:
+  containers:
+  - image: nginx
+    name: cont1
+    env:
+    - name: PROFILE
+      value: prod
+    - name: VERSION
+      value: ‘1.0’
+
+
+
+
+#userconfig.yaml:
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: userconfig
+data:
+  user: Kishore
+
+
+#values.json
+
+{
+user: dbsuser
+db_url: jdbc://mysql://localhost/test
+}
+
+
+#secret
+
+
+apiVersion: v1
+kind: Secret
+metadata:
+  name: databsecredentials
+type: Opaque
+data:
+  dbpwd: dGVzdEAxMjM=
+
+
+#Pod using configmap and secret
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: testpod
+spec:
+  containers:
+  - image: nginx
+    name: app
+    envFrom:
+     - secretRef:
+         name: db-password
+     - configMapRef:
+         name: db-username
+
+
+
+
+
+
+
+
+#secret configmap as volumes
+apiVersion: v1
+kind: Pod
+metadata:
+  name: configpod
+spec:
+  containers:
+  - image: nginx
+    name: appvol
+    volumeMounts:
+    - name: config-volume
+      mountPath: /etc/config
+    - name: secret-volume
+      mountPath: /etc/config1
+  volumes:
+  - name: config-volume
+    configMap:
+      name: db-username
+  - name: secret-volume
+    secret:
+      secretName: db-password

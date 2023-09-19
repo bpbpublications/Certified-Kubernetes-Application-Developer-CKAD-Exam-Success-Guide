@@ -1,0 +1,4 @@
+
+#command to display  the events of Pod
+
+kubectl get events --field-selector involvedObject.name="livenesscheck"

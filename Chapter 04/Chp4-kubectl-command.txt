@@ -1,0 +1,88 @@
+
+#command describes deployment in a cluster
+
+kubectl describe deploy ngix-deploy
+
+#command provides wider details to the deployment
+
+kubectl get deploy -o wide
+
+# command to update the image
+
+kubectl set image deploy/nginx-deploy nginx=nginx:1.9.5
+
+
+#commands list out previous versions of revisions and configurations
+
+kubectl rollout history deployment nginx-deploy
+
+#commands to capture the change cause
+
+kubectl set image deploy/nginx-deploy nginx=nginx:latest --record=true
+
+
+#command to lists out the status of the deployment
+
+kubectl rollout status deployment nginx-deploy
+
+# command to retrieves the information of a particular revision
+
+kubectl rollout history deployments nginx-deploy --revision=2
+
+# command to get current deployment details
+
+kubectl get deploy -o wide
+
+
+#command to rollback to the previous version
+
+kubectl rollout undo deployment nginx-deploy --to-revision=2
+
+# command to scale deployment
+
+kubectl scale deployment nginx-deploy --replicas=5
+
+#command to autoscale
+
+kubectl autoscale deploy nginx-deploy --cpu-percent=70 --min=2 --max=6
+
+# command to check the version of installed helm 
+
+helm version
+
+# command to create new chart with a given name
+
+helm create hello-world
+
+#command to search the repository 
+
+helm search repo mysql
+
+# command to  get the repo list
+
+helm repo list
+
+# command to helm install
+
+helm install  bitnami/mysql --generate-name
+
+# command to  show values
+
+helm show values bitnami/mysql
+
+#command to lists installed packages
+
+helm list
+
+#Uninstall packages from helm
+
+helm uninstall < release name>
+
+#pull command only to download the helm packages
+
+helm pull –untar bitnami/mysql
+
+#command to change the values of the chart from values.yaml
+
+helm install release4 ./mysql
+

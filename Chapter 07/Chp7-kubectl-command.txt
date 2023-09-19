@@ -1,0 +1,18 @@
+
+#command to get pv
+kubectl get pv
+
+#command to get pvc
+
+kubectl get pvc
+
+#command to describe pvc
+
+
+kubectl describe pvc pvcdemo
+
+
+#command to get storage class
+
+kubectl get Storageclass
+

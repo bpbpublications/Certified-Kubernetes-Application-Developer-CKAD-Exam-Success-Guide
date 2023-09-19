@@ -1,0 +1,84 @@
+#Solution for question 1
+
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: nginx
+  name: deploy-test
+spec:
+ replicas: 2
+ selector:
+   matchLabels:
+     app: nginx
+ template:
+   metadata:
+     labels:
+       app: nginx
+   spec:
+     containers:
+     - image: nginx
+       name: container-test
+
+
+
+kubectl set image deployment deploy-test container-test=nginx:alpine --record=true
+
+kubectl rollout status deployment deploy-test
+
+
+#solution 2
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+ labels:
+   run: deploy-config
+ name: deploy-config
+spec:
+ replicas: 3
+ selector:
+   matchLabels:
+     run: deploy-config
+ template:
+   metadata:
+     labels:
+       run: deploy-config
+   spec:
+     containers:
+     - image: nginx
+       name: deploy-config
+
+kubectl get deployment deploy-config -o yaml
+
+kubectl edit deployment deploy-config
+
+kubectl set image deployment deploy-config deploy-config=nginx:alpine --record=true
+
+
+
+#solution 3
+
+kubectl create deployment server-deployment --image=grand-server:1.4.6
+
+kubectl scale deployment server-deployment --replicas=2
+
+kubectl get deployments
+
+
+kubectl set image deployment server-deployment grand-server=nginx
+
+
+kubectl rollout history deployment server-deployment
+
+
+
+#solution 4
+
+
+helm install bitnami/wordpress –release1
+
+helm list
+
+helm uninstall release1

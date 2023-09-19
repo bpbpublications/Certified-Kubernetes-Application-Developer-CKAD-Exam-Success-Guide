@@ -1,0 +1,41 @@
+
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ping
+spec:
+  containers:
+  - image: busybox
+    name: pingmain
+    command: [“ping”]
+    args: [“kubernetes.io”]
+
+
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pingtwo
+spec:
+  containers:
+  - image: busybox
+    name: pingmain
+    command: ["ping"]
+    args: ["kubernetes.io"]
+  - image: busybox
+    name: pingsec
+    command: ["ping"]
+    args: ["kubernetes.io"]
+
+
+
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: checkpod
+spec:
+containers:
+- image: nginxx
+  name: checkpod

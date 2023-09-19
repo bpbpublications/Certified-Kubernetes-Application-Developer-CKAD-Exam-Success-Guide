@@ -1,0 +1,120 @@
+
+# volume mount
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: volume-app
+spec:
+  volumes:
+  - name: logvol
+    emptyDir: {}
+  containers:
+  - image: nginx
+    name: nginx
+    volumeMounts:
+    - mountPath: /var/logs
+      name: logvol
+
+
+
+
+
+#PV
+
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+ name: pvdemo
+spec:
+ capacity:
+  storage: 2Gi
+ accessModes:
+   - ReadWriteOnce
+ hostPath:
+   path: "/mnt/data"
+
+
+#PVC
+
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+ name: pvcdemo
+spec:
+ accessModes:
+   - ReadWriteOnce
+ volumeMode: Filesystem
+ resources:
+   requests:
+     storage: 1Gi
+
+
+
+
+#PV
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+ name: pvdemo
+spec:
+ capacity:
+  storage: 2Gi
+ accessModes:
+  - ReadWriteOnce
+ hostPath:
+   path: “/usr/local”
+
+
+  #PVC
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+ name: pvcdemo
+spec:
+ accessModes:
+   - ReadWriteOnce
+ volumeMode: Filesystem
+ resources:
+   requests:
+     storage: 1Gi
+
+
+#pod with PVC
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: app
+spec:
+  volumes:
+  - name: demovol
+    persistentVolumeClaim:
+      claimName: pvcdemo
+  containers:
+  - name: democontainer
+    image: nginx
+    ports:
+    - containerPort: 80
+    name: "http-server"
+    volumeMounts:
+    - mountPath: "/usr/share/nginx/html"
+      name: demovol
+
+
+#storage class
+
+
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+ name: gp2std
+provisioner: kubernetes.io/aws-ebs
+parameters:
+ type: gp2
+reclaimPolicy: Retain
+volumeBindingMode: Immediate

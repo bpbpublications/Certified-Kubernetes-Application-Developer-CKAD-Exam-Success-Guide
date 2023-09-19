@@ -1,0 +1,276 @@
+# Solution 1
+
+kubectl create ns ckad-test
+
+kubectl run testpod --image=nginx:1.99 --restart=Never --port=80 --namespace=ckad-test
+
+kubectl get pods -n ckad-test
+
+echo “ImagePullBackOff” | cat >>error.txt
+
+kubectl edit pod testpod -n ckad-test
+
+
+# Solution 2
+
+kubectl exec testpod -it --namespace=ckad-test -- /bin/sh
+vi out.txt
+kubectl get pods -o wide -n ckad-test
+
+kubectl run busybox --image=busybox --rm -it --restart=Never -n ckad-test -- /bin/sh
+
+wget -O- 10.0.0.183  # check your ip
+
+kubectl delete pod testpod --namespace=ckad-test
+
+kubectl delete ns ckad-test
+
+
+
+
+# Solution 3
+
+echo -e “DB_PORT=6603\nDB_USER=admin” > configtest.txt
+
+kubectl create configmap dbtest-config --from-env-file=configtest.txt
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: db
+spec:
+  containers:
+  - image: nginx
+    name: db
+    envFrom:
+    - configMapRef:
+        name: dbtest-config
+
+
+kubectl exec db --env
+
+
+
+# Solution 4
+
+kubectl create secret generic db-secret --from- literal=password=passw0d
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: dbsecretpod
+spec:
+  containers:
+  - image: nginx
+    name: dbsecretpod
+    env:
+      - name: DB_PASS
+        valueFrom:
+          secretKeyRef:
+            name: db-secret
+            key: password
+
+# Solution 5
+
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: securedpod
+spec:
+  securityContext:
+    fsGroup: 4000
+  containers:
+  - image: nginx
+    name: securedcontainer
+    volumeMounts:
+    - name: data-vol
+      mountPath: /data/testapp
+  volumes:
+  - name: data-vol
+    emptyDir: {}
+
+# Solution 6
+
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod1
+spec:
+  containers:
+  - image: nginx
+    name: cont1
+     resources:
+       requests:
+         memory: "1G"
+         cpu: "400m"
+
+# Solution 7
+
+
+kubectl create serviceaccount sa
+
+
+apiVersion: v1
+kind: Pod
+metadata:
+   name: podsa
+spec:
+  serviceAccountName: sa
+  containers:
+  - image: nginx
+    name: cont1
+
+# Solution 8
+
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: adapter
+spec:
+  volumes:
+  - name: config-volume
+    emptyDir: {}
+  containers:
+  - args:
+    - /bin/sh
+    - -c
+    - 'while true; do echo “$(date) | $(du -sh ~)” \
+      >>/var/logs/space.txt; sleep 10; done'
+    image: busybox
+    name: appln
+    volumeMounts:
+    - name: config-volume
+      mountPath: /var/logs
+  - image: busybox
+    name: transform
+    args:
+    - /bin/sh
+    - -c
+    - ‘sleep 30; while true; do while read LINE; do echo
+      “$LINE” \
+      | cut - f2 -d”|” >>$(date +%Y-%m-%d-%H-%M-%S)-
+        transform.txt; \
+       done < /var/logs/space.txt; sleep 20; done’
+    volumeMounts:
+      - name: config-volume
+        mountPath: /var/logs
+
+
+# Solution 9
+
+
+apiVersion: v1
+kind: Pod
+metadata:
+ name: check-probe
+spec:
+ containers:
+ - image: nginx
+   name: check-probe
+   ports:
+   - containerPort: 8080
+   livenessProbe:
+     httpGet:
+       path: /
+       port: 8080
+     initialDelaySeconds: 5
+     periodSeconds: 5
+
+  # Solution 10
+
+  kubectl logs fail-pod
+
+
+
+  # Solution 11
+
+kubectl run pod1 --image=nginx -l tier=fe
+kubectl run pod2 --image=nginx -l tier=be
+kubectl run pod3 --image=nginx -l tier=db
+
+kubectl annotate pod pod1 pod3 branch="uat"
+
+  # Solution 12
+
+kubectl label pod pod1 pod2 pod3 team="avengers"
+kubectl get pods -l tier=be,'team in (avengers)'
+
+
+  # Solution 13
+
+  kubectl create deployment my-dep --image=nginx --replicas=3
+
+  kubectl set image deployment/my-dep nginx=nginx:latest
+
+  # Solution 14
+
+  kubectl scale deployments my-dep  --replicas=4
+
+  kubectl rollout undo deployment/my-dep --to-revision=1
+
+
+ # Solution 15
+
+  kubectl create cronjob date --schedule="* * * * *" --restart=OnFailure --image=nginx -- /bin/sh -c ‘echo “latest date: $(date)”‘
+
+  #solution 16
+
+  kubectl create deployment mydep --image=nginx --replicas=3 --port=80
+
+  #solution 17
+
+  apiVersion: v1
+  kind: PersistentVolume
+  metadata:
+    name: pv1
+  spec:
+  capacity:
+    storage: 512m
+  accessModes:
+    - ReadWriteMany
+  storageClassName: shared
+  hostPath:
+    path: /data/config1
+
+#solution 18
+
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: pvc1
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 256m
+  storageClassName: shared
+
+
+#solution 19
+
+
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: app1
+spec:
+  containers:
+  - image: nginx
+    name: app
+    volumeMounts:
+    - mountPath: "/var/app/config"
+      name: configpvc
+  volumes:
+  - name: configpvc
+    persistentVolumeClaim:
+      claimName: pvc1
+
+
+
+
+

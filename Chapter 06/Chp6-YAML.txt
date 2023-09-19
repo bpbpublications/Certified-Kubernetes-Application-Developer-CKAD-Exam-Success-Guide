@@ -1,0 +1,74 @@
+
+#sidecar
+
+kind: Pod
+apiVersion: v1
+metadata:
+  name: sidecarpattern
+spec:
+  volumes:
+  - name: log-vol
+    emptyDir: {}
+  containers:
+  - name: app
+    image: busybox
+    command: [“/bin/sh”]
+    args: [“-c”, “while true; do date >> /var/log/nginx/date.txt; sleep 10;done”]
+    volumeMounts:
+    - name: log-vol
+      mountPath: /var/log/nginx
+
+  - name: sidecar
+    image: nginx
+    volumeMounts:
+    - name: log-vol
+      mountPath: /var/log/
+
+
+
+
+
+
+#adapter pattern
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: adapterpod
+spec:
+  volumes:
+  - name: logs
+    emptyDir: {}
+  containers:
+  - name: app
+    image: alpine
+    command: ["/bin/sh"]
+    args: ["-c", "while true; do date >> /var/log/app.log; sleep 2;done"]
+    volumeMounts:
+    - name: logs
+      mountPath: /var/log
+  - name: adapter
+    image: alpine
+    command: ["/bin/sh"]
+    args: ["-c", "tail -f /var/log/app.log|sed -e 's/^/DateChanged /' > /var/log/out.log"]
+    volumeMounts:
+    - name: logs
+      mountPath: /var/log
+
+
+#init container
+
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: initpod
+spec:
+  containers:
+  - name: app
+    image: nginx
+  initContainers:
+  - name: delay
+    command: ["sleep", '45']
+    image: busybox
+~

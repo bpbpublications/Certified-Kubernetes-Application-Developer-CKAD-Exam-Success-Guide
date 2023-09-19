@@ -1,0 +1,26 @@
+# Solution 1
+
+kubectl run pod1 --image=nginx -l tier=frontend
+kubectl run pod2 --image=nginx -l tier=backend
+kubectl run pod3 --image=nginx -l tier=backend
+
+kubectl get pods --show-labels
+
+
+# Solution 2
+
+kubectl annotate pod pod1 pod3 branch=”master”
+
+
+# Solution 3
+
+kubectl label pod pod1 pod2 pod3 team=”avengers”
+
+# Solution 4
+
+kubectl get pods -l tier=backend,’team in (avengers)’
+
+kubectl create cronjob search --schedule=”* * * * *” --image=nginx -- /
+bin/sh -c ‘curl google.com’
+
+kubectl get cronjob

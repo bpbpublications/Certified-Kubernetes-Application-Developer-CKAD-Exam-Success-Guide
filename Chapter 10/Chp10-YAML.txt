@@ -1,0 +1,60 @@
+# readiness probe
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: readiness-pod
+spec:
+  containers:
+  - image: nginx
+    name: readyme
+    ports:
+    -  containerPort: 8080
+    readinessProbe:
+      httpGet:
+        path: /
+        port: 8081
+      initialDelaySeconds: 2
+      periodSeconds: 8
+
+
+
+#liveness Probe
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: livenesscheck
+spec:
+  containers:
+  - image: busybox
+    name: app
+    args:
+    - /bin/sh
+    - -c
+    - while true; do touch /tmp/test.txt; sleep 36; rm -f /tmp/test.txt;sleep 600; done;
+    livenessProbe:
+      exec:
+       command:
+       - cat /temp/test.txt
+      initialDelaySeconds: 5
+      periodSeconds: 5
+
+
+
+#startup probe
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: startupcheck
+spec:
+  containers:
+  - image: httpd:2.4.46
+    name: http-server
+    startupProbe:
+      tcpSocket:
+        port: 80
+      initialDelaySeconds: 3
+      periodSeconds: 15
+~

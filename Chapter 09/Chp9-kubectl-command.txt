@@ -1,0 +1,18 @@
+
+#command to query the Pod
+
+kubectl exec -it securitydemo --sh
+
+
+#command to describe resourcequota
+
+kubectl describe resourcequota res-quota --namespace=resource-test
+
+
+#command to find the service account of the Pod
+
+kubectl get pod nginx -o yaml | grep service
+
+
+
+

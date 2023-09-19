@@ -1,0 +1,34 @@
+#command will display the version of Docker installed
+
+docker --version
+
+
+#command will download a small test image and run it on the container
+
+docker run hello-world
+
+
+#command will display all the images that are currently running on the system
+
+docker images
+
+#command will list all the running containers 
+
+docker ps
+
+#command will start a new Kubernetes cluster
+
+minikube start
+
+#command will display the status of the minikube cluster
+
+minikube status
+
+#command will stop the minikube cluster
+
+minikube stop
+
+
+#command will delete the minikube cluster
+
+minikube delete

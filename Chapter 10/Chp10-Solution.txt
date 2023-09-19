@@ -1,0 +1,46 @@
+# Solution 1
+
+
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: check-probe
+spec:
+  containers:
+  - image: nginx
+    name: check-probe
+    ports:
+    - containerPort: 8080
+    readinessProbe:
+     httpGet:
+      path: /
+      port: 8080
+     initialDelaySeconds: 5
+     periodSeconds: 5
+
+# Solution 2
+
+kubectl get events --field-selector involvedObject.name="check-probe"
+
+
+# Solution 3
+
+apiVersion: v1
+kind: Pod
+metadata:
+   name: probetest
+spec:
+  containers:
+  - image: nginx
+    name: probetest
+    args:
+    - /bin/sh
+    - -c
+    - touch /tmp/myfile; sleep 3600
+    livenessProbe:
+      exec:
+        command:
+        - cat /temp/myfile
+      initialDelaySeconds: 3
+      periodSeconds: 3

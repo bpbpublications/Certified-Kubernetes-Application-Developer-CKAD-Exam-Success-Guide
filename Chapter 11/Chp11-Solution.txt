@@ -1,0 +1,16 @@
+# Solution 1
+
+kubectl create -f faultpod.yaml
+
+
+
+# Solution 2
+
+
+kubectl get events --field-selector involvedObject.name=”monitor” > / 
+tmp/podlog.txt
+
+
+# Solution 3
+
+kubectl top pod monitor

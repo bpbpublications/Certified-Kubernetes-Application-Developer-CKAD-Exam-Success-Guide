@@ -1,0 +1,99 @@
+
+
+#label 
+
+apiVersion: v1
+kind: Pod
+metadata:
+ name: nginx
+ labels:
+   environment: frontend
+   tier: ui
+spec:
+ containers:
+ - name: nginx
+   image: nginx
+
+
+#annotation
+
+apiVersion: v1
+kind: Pod
+metadata:
+ name: nginx
+ annotations:
+   author: “@kishore”
+   origin: “The Pod will run the front-end application”
+   branch:  “master”
+ labels:
+   environment: frontend
+   tier: ui
+spec:
+ containers:
+ - name: nginx
+   image: nginx
+
+
+
+
+#annotation
+
+apiVersion: v1
+kind: Pod
+metadata:
+ name: nginx   
+ annotations:
+   author: “@kishore”
+   origin: “The Pod will run the front-end application”
+   branch:  “master”
+ labels:
+   environment: frontend
+   tier: ui
+spec:
+ containers:
+ - name: nginx
+   image: nginx
+
+
+#job
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: count
+spec:
+  template:
+    spec:
+      containers:
+      - name: counter
+        image: busybox
+        command:
+        - /bin/sh
+        - -c
+          - counter=0; while [ $counter -lt 5 ]; do counter=$((counter+1)); \
+             echo “$counter”; sleep 3; done;
+      restartPolicy: Never
+
+
+
+
+#cronjob
+
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: current-date
+spec:
+  schedule: "* * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: current-date
+            image: busybox
+            command:
+            - /bin/sh
+            - -c
+            - 'echo "Current date: $(date)"'
+          restartPolicy: OnFailure

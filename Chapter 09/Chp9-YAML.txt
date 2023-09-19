@@ -1,0 +1,100 @@
+
+# sec context
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: securitydemo
+spec:
+  securityContext:
+    runAsUser: 1000
+    runAsGroup: 3000
+    fsGroup: 2000
+  volumes:
+  - name: secvol
+    emptyDir: {}
+  containers:
+  - name: cont1
+    image: busybox
+    command: [ “sh”, “-c”, “sleep 1h” ]
+    volumeMounts:
+    - name: secvol
+      mountPath: /data/demo
+    securityContext:
+      allowPrivilegeEscalation: false
+
+
+#run as non root
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: rootcheck
+spec:
+  containers:
+  - image: nginx:1.18.0
+    name: seccontainer
+    securityContext:
+      runAsNonRoot: true
+
+
+
+#res quota
+
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: res-quota
+spec:
+    hard:
+     pods: 1
+     requests.cpu: "1"
+     requests.memory: 1024m
+     limits.cpu: "2"
+     limits.memory: 2096m
+
+
+
+
+#create Pod
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginxresourcheck
+spec:
+  containers:
+  - image: nginx
+    name: nginx
+
+
+#resource quota
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginxresourcheck
+spec:
+  containers:
+  - image: nginx
+     name: nginx
+     resources:
+       requests:
+        cpu: "0.5"
+        memory: "512m"
+       limits:
+        cpu: "1"
+        memory: "1024m"
+
+
+
+#service account
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginxsa
+spec:
+  serviceAccount: custom
+  containers:
+  - image: nginx:1.18.0
+    name: nginx

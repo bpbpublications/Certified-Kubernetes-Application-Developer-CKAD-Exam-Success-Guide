@@ -1,0 +1,62 @@
+
+#command to create service
+
+kubectl create service clusterip service-nginx --tcp=80:80
+
+#command to get service in cluster
+
+kubectl get service
+
+#command to creates an nginx pod with the name nginxpod and expose service
+
+kubectl run nginxpod --image=nginx --restart=Never --port=80 --expose
+
+#command to expose deployment
+
+kubectl expose deployment my-dep --port=80 --target-port=80
+
+#command to run a busybox pod and query
+
+kubectl run busybox --image=busybox --restart=Never -it -- /bin/sh
+
+#command to patch service my-dep is patched to NodePort Type
+
+kubectl patch service my-dep -p ‘{ “spec”: {“type”: “NodePort”} }
+
+# command to delete minikube
+
+minikube delete
+
+
+# command to  start the minikube cluster with the network plugin 
+
+minikube start --network-plugin=cni --enable-default-cni
+
+# command to install cilium in the cluster.
+
+kubectl create -f https://raw.githubusercontent.com/cilium/cilium/v1.9/install/kubernetes/quick-install.yaml
+
+# command to get pods
+
+kubectl get po -n kube-system
+
+# command to create BE app
+
+kubectl run backend --image=nginx --restart=Never -l app=BE,role=api --port 80
+
+
+# command to create FE app , check your ip 
+kubectl run frontend --rm -it --image=busybox --restart=Never -l app=FE -- /bin/sh $wget --spider --timeout=1 10.0.0.165
+
+#command to describe network policy
+
+kubectl describe netpol api-flow
+
+
+#command to show lables
+kubectl get pods --show-labels
+
+
+# comamnd to get endpoints of pods
+kubectl get endpoints my-dep
+

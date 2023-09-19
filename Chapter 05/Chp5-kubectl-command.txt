@@ -1,0 +1,80 @@
+
+
+#command will create a Pod named nginx and attach two labels
+
+kubectl run nginx --image=nginx -l environment=frontend,tier=ui
+
+# command to selectively filter kubectl outputs
+
+kubectl get po -l environment=frontend
+
+# command to shows the Pods with attached labels 
+
+kubectl get po --show-labels
+
+# command to filter based on equality
+
+kubectl get po -l env!=prod
+
+#command to filter based on set 
+
+kubectl get po -l ‘env in (prod)’
+
+#command to add label
+
+kubectl label pod labelpod env=prod
+
+#command to update label
+
+kubectl label pod labelpod env=qa --overwrite
+
+# command to remove label
+
+kubectl label pod labelpod env-
+
+#command to add annotation
+
+kubectl annotate pod backend description=”for be application”
+
+
+#command to describe annotation
+
+kubectl describe pod  backend | grep -C2 “application”
+
+
+#command to update annotation
+
+kubectl annotate pod backend description=”The application resides connect to backend application” --overwrite
+
+
+# command to remove annotation
+
+kubectl annotate pod backend description–
+
+
+# command to create job
+
+kubectl create job count --image=busybox -- /bin/sh -c ‘counter=0; \
+while [ $counter -lt 5 ]; do counter=$((counter+1)); echo “$counter”; \ 
+sleep 3; done;’
+
+
+#command to print log 
+
+kubectl logs count-scqbw
+
+
+#command to create cron job 
+
+kubectl create cronjob current-date --schedule=”* * * * *” --image=busybox -- /bin/sh -c ‘echo “Current date: $(date)”’
+
+
+#command to list down cron jobs
+
+kubectl get cronjobs
+
+
+#command to query the Pod
+
+kubectl logs current-date-28027223-w69w6
+
